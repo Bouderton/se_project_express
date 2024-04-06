@@ -10,14 +10,12 @@ const clothingItemsSchema = new mongoose.Schema({
   weather: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    enum: ["hot", "warm", "cold"],
   },
   imageURL: {
     type: String,
     required: true,
     // MAKE SURE IT MATCHES EITHER HOT COLD OR WARM
-    enum: ["hot", "warm", "cold"],
     validator(value) {
       return validator.isURL(value);
     },

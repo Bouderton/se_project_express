@@ -16,7 +16,7 @@ const createItem = (req, res) => {
   const { name, weather, imageURL } = req.body;
 
   ClothingItem.create({ name, weather, imageURL })
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(201).send(item))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 

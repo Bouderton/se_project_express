@@ -17,6 +17,7 @@ const clothingItemsSchema = new mongoose.Schema({
     type: String,
     required: true,
     // MAKE SURE IT MATCHES EITHER HOT COLD OR WARM
+    enum: ["hot", "warm", "cold"],
     validator(value) {
       return validator.isURL(value);
     },

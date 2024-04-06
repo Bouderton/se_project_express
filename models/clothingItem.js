@@ -14,7 +14,7 @@ const clothingItemsSchema = new mongoose.Schema({
     maxlength: 30,
   },
   imageURL: {
-    type: URL,
+    type: String,
     required: true,
     // MAKE SURE IT MATCHES EITHER HOT COLD OR WARM
     validator(value) {
@@ -22,6 +22,9 @@ const clothingItemsSchema = new mongoose.Schema({
     },
     message: "You must enter a valid URL",
   },
+  // owner
+  // likes
+  // createdAt
 });
 
 module.exports = mongoose.model("item", clothingItemsSchema);

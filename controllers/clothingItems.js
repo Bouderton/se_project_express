@@ -75,7 +75,7 @@ const dislikeItem = (req, res) => {
     });
 };
 
-module.exports = { createItem, getItems, deleteItem };
+module.exports = { createItem, getItems, deleteItem, likeItem, dislikeItem };
 
 module.exports.likeItem = (req, res) =>
   ClothingItem.findById(

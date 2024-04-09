@@ -3,6 +3,8 @@ const {
   createItem,
   getItems,
   deleteItem,
+  likeItem,
+  dislikeItem,
 } = require("../controllers/clothingItems");
 
 router.get("/", getItems);

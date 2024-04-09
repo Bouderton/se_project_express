@@ -77,6 +77,10 @@ const dislikeItem = (req, res) => {
 
 module.exports = { createItem, getItems, deleteItem, likeItem, dislikeItem };
 
+module.exports.creatItem = (req, res) => {
+  console.log(req.user._id);
+};
+
 module.exports.likeItem = (req, res) =>
   ClothingItem.findById(
     req.params.itemId,

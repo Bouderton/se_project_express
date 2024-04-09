@@ -15,5 +15,12 @@ app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: "6610c4f20ecc10975709f402",
+  };
+  next();
+});
+
 app.use(express.json());
 app.use("/", mainRouter);

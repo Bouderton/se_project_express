@@ -44,4 +44,18 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { createItem, getItems, deleteItem };
+const likeItem = (req, res) => {
+  const { userId } = req.params;
+  ClothingItem.findById(userId)
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
+};
+
+module.exports = { createItem, getItems, deleteItem, likeItem };

@@ -37,9 +37,6 @@ const clothingItemsSchema = new mongoose.Schema({
       default: Date.now,
     },
   },
-  // owner
-  // likes
-  // createdAt
 });
 
 module.exports = mongoose.model("item", clothingItemsSchema);

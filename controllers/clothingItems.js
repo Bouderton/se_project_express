@@ -79,19 +79,19 @@ const dislikeItem = (req, res) => {
 
 module.exports = { createItem, getItems, deleteItem, likeItem, dislikeItem };
 
-module.exports.creatItem = (req, res) => {
+module.exports.createItem = (req, res) => {
   console.log(req.user._id);
 };
 
 module.exports.likeItem = (req, res) =>
-  ClothingItem.findById(
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
     res.status(200).send({ message: "Item liked" }),
 
     (module.exports.dislikeItem = (req, res) =>
-      ClothingItem.findById(
+      ClothingItem.findByIdAndUpdate(
         req.params.itemId,
         { $pull: { likes: req.user._id } },
         { new: true },

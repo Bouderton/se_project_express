@@ -1,3 +1,5 @@
+const {NOT_FOUND, SERVER_ERROR, INVALID_DATA} = require("../utils/errors");
+
 const ClothingItem = require("../models/clothingItem");
 
 const getItems = (req, res) => {
@@ -5,7 +7,7 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -19,9 +21,9 @@ const createItem = (req, res) => {
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(INVALID_DATA).send({ message: err.message });
       }
-      return res.status(500).send({ message: "Failed to create item" });
+      return res.status(SERVER_ERROR).send({ message: "Failed to create item" });
     });
 };
 
@@ -31,16 +33,16 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(itemId)
     .then((item) => {
       if (!item) {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       return res.status(200).send({ message: "Successfully deleted" });
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -52,9 +54,9 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -69,9 +71,9 @@ const dislikeItem = (req, res) => {
         return res.status(200).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(404).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 

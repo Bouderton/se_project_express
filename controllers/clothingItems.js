@@ -17,7 +17,7 @@ const createItem = (req, res) => {
 
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -47,8 +47,8 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  const { userId } = req.params;
-  ClothingItem.findById(userId)
+  const { itemId } = req.params;
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {

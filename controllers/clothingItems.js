@@ -1,13 +1,13 @@
-const {NOT_FOUND, SERVER_ERROR, INVALID_DATA} = require("../utils/errors");
+const { NOT_FOUND, SERVER_ERROR, INVALID_DATA } = require('../utils/errors');
 
-const ClothingItem = require("../models/clothingItem");
+const ClothingItem = require('../models/clothingItem');
 
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(SERVER_ERROR).send("An error has occured on the server");
+      return res.status(SERVER_ERROR).send('An error has occured on the server');
     });
 };
 
@@ -17,13 +17,15 @@ const createItem = (req, res) => {
 
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+  ClothingItem.create({
+    name, weather, imageUrl, owner: req.user._id,
+  })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(INVALID_DATA).send("Invalid Data");
+      if (err.name === 'ValidationError') {
+        return res.status(INVALID_DATA).send('Invalid Data');
       }
-      return res.status(SERVER_ERROR).send({ message: "Failed to create item" });
+      return res.status(SERVER_ERROR).send({ message: 'Failed to create item' });
     });
 };
 
@@ -33,16 +35,16 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(itemId)
     .then((item) => {
       if (!item) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: 'Item not found' });
       }
-      return res.status(200).send({ message: "Successfully deleted" });
+      return res.status(200).send({ message: 'Successfully deleted' });
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        return res.status(INVALID_DATA).send("Invalid Data. Failed to delete item");
+      if (err.name === 'CastError') {
+        return res.status(INVALID_DATA).send('Invalid Data. Failed to delete item');
       }
-      return res.status(SERVER_ERROR).send("An error have occured on the server");
+      return res.status(SERVER_ERROR).send('An error have occured on the server');
     });
 };
 
@@ -53,12 +55,12 @@ const likeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res.status(INVALID_DATA).send("Invalid Data. Failed to like item")
+      } if (err.name === 'CastError') {
+        return res.status(INVALID_DATA).send('Invalid Data. Failed to like item');
       }
-      return res.status(SERVER_ERROR).send("An error has occured on the server");
+      return res.status(SERVER_ERROR).send('An error has occured on the server');
     });
 };
 
@@ -69,30 +71,30 @@ const dislikeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(200).send({ message: err.message });
       }
-      if (err.name === "CastError") {
-        return res.status(INVALID_DATA).send("Invalid Data");
+      if (err.name === 'CastError') {
+        return res.status(INVALID_DATA).send('Invalid Data');
       }
-      return res.status(SERVER_ERROR).send("An error has occured on the server");
+      return res.status(SERVER_ERROR).send('An error has occured on the server');
     });
 };
 
-module.exports = { createItem, getItems, deleteItem, likeItem, dislikeItem };
+module.exports = {
+  createItem, getItems, deleteItem, likeItem, dislikeItem,
+};
 
-module.exports.likeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
+module.exports.likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
+  req.params.itemId,
+  { $addToSet: { likes: req.user._id } },
+  { new: true },
+  res.status(200).send({ message: 'Item liked' }),
+
+  (module.exports.dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id } },
+    { $pull: { likes: req.user._id } },
     { new: true },
-    res.status(200).send({ message: "Item liked" }),
-
-    (module.exports.dislikeItem = (req, res) =>
-      ClothingItem.findByIdAndUpdate(
-        req.params.itemId,
-        { $pull: { likes: req.user._id } },
-        { new: true },
-        res.status(200).send({ message: "Item disliked" }),
-      )),
-  );
+    res.status(200).send({ message: 'Item disliked' }),
+  )),
+);

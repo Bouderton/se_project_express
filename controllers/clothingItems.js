@@ -7,7 +7,7 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(SERVER_ERROR).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 
@@ -15,13 +15,13 @@ const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
 
-  const { name, weather, imageURL } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageURL })
+  ClothingItem.create({ name, weather, imageUrl })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(INVALID_DATA).send({ message: err.message });
+        return res.status(INVALID_DATA).send("Invalid Data");
       }
       return res.status(SERVER_ERROR).send({ message: "Failed to create item" });
     });
@@ -40,9 +40,9 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(INVALID_DATA).send("Invalid Data");
       }
-      return res.status(SERVER_ERROR).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error have occured on the server");
     });
 };
 
@@ -56,7 +56,7 @@ const likeItem = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: err.message });
       }
-      return res.status(SERVER_ERROR).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 
@@ -71,9 +71,9 @@ const dislikeItem = (req, res) => {
         return res.status(200).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(INVALID_DATA).send("Invalid Data");
       }
-      return res.status(SERVER_ERROR).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 

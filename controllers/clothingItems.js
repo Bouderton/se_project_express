@@ -53,7 +53,6 @@ const likeItem = (req, res) => {
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
-    res.send({ message: 'Item liked' }),
   )
     .orFail()
     .then((item) => res.send(item))
@@ -73,7 +72,6 @@ const dislikeItem = (req, res) => {
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true },
-    res.send({ message: 'Item disliked' }),
   )
     .orFail()
     .then((item) => res.send(item))

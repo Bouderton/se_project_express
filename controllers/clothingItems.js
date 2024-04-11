@@ -40,7 +40,7 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(INVALID_DATA).send("Invalid Data");
+        return res.status(INVALID_DATA).send("Invalid Data. Failed to delete item");
       }
       return res.status(SERVER_ERROR).send("An error have occured on the server");
     });
@@ -48,13 +48,15 @@ const deleteItem = (req, res) => {
 
 const likeItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findById(itemId)
+  ClothingItem.findByIdAndUpdate(itemId)
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: err.message });
+      } else if (err.name === "CastError") {
+        return res.status(INVALID_DATA).send("Invalid Data. Failed to like item")
       }
       return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
@@ -62,7 +64,7 @@ const likeItem = (req, res) => {
 
 const dislikeItem = (req, res) => {
   const { userId } = req.params;
-  ClothingItem.findById(userId)
+  ClothingItem.findByIdAndUpdate(userId)
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
@@ -78,10 +80,6 @@ const dislikeItem = (req, res) => {
 };
 
 module.exports = { createItem, getItems, deleteItem, likeItem, dislikeItem };
-
-module.exports.createItem = (req, res) => {
-  console.log(req.user._id);
-};
 
 module.exports.likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(

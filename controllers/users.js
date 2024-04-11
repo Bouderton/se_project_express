@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const {INVALID_DATA, NOT_FOUND, SERVER_ERROR} = require("../utils/errors");
 
 //GET users
 
@@ -7,7 +8,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 
@@ -18,9 +19,9 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(INVALID_DATA).send("Invalid Data. Failed to create user");
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 
@@ -32,11 +33,11 @@ const getUserId = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(400).send({ message: err.message });
+        res.status(NOT_FOUND).send("User ID not found");
+      } else if (err.name === "CastError") {
+        res.status(INVALID_DATA).send("Invalid Data");
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send("An error has occured on the server");
     });
 };
 

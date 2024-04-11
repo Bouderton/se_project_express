@@ -52,7 +52,7 @@ const likeItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(200).send({message: 'Item Liked'}))
     .catch((err) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
@@ -68,7 +68,7 @@ const dislikeItem = (req, res) => {
   const { userId } = req.params;
   ClothingItem.findByIdAndUpdate(userId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(200).send({message: 'Item Disliked'}))
     .catch((err) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
@@ -85,16 +85,16 @@ module.exports = {
   createItem, getItems, deleteItem, likeItem, dislikeItem,
 };
 
-module.exports.likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-  req.params.itemId,
-  { $addToSet: { likes: req.user._id } },
-  { new: true },
-  res.status(200).send({ message: 'Item liked' }),
+// module.exports.likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
+//   req.params.itemId,
+//   { $addToSet: { likes: req.user._id } },
+//   { new: true },
+//   res.status(200).send({ message: 'Item liked' }),
 
-  (module.exports.dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-    res.status(200).send({ message: 'Item disliked' }),
-  )),
-);
+//   (module.exports.dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
+//     req.params.itemId,
+//     { $pull: { likes: req.user._id } },
+//     { new: true },
+//     res.status(200).send({ message: 'Item disliked' }),
+//   )),
+// );

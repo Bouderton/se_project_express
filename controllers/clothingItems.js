@@ -7,7 +7,7 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(SERVER_ERROR).send({message: 'An error has occured on the server'});
+      return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
     });
 };
 
@@ -23,7 +23,7 @@ const createItem = (req, res) => {
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(INVALID_DATA).send({message: 'Invalid Data'});
+        return res.status(INVALID_DATA).send({ message: 'Invalid Data' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Failed to create item' });
     });
@@ -42,9 +42,9 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
-        return res.status(INVALID_DATA).send({message: 'Invalid Data. Failed to delete item'});
+        return res.status(INVALID_DATA).send({ message: 'Invalid Data. Failed to delete item' });
       }
-      return res.status(SERVER_ERROR).send({message: 'An error have occured on the server'});
+      return res.status(SERVER_ERROR).send({ message: 'An error have occured on the server' });
     });
 };
 
@@ -61,9 +61,9 @@ const likeItem = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({ message: err.message });
       } if (err.name === 'CastError') {
-        return res.status(INVALID_DATA).send({message: 'Invalid Data. Failed to like item'});
+        return res.status(INVALID_DATA).send({ message: 'Invalid Data. Failed to like item' });
       }
-      return res.status(SERVER_ERROR).send({message: 'An error has occured on the server'});
+      return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
     });
 };
 
@@ -81,9 +81,9 @@ const dislikeItem = (req, res) => {
         return res.status(200).send({ message: err.message });
       }
       if (err.name === 'CastError') {
-        return res.status(INVALID_DATA).send({message: 'Invalid Data'});
+        return res.status(INVALID_DATA).send({ message: 'Invalid Data' });
       }
-      return res.status(SERVER_ERROR).send({message: 'An error has occured on the server'});
+      return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
     });
 };
 

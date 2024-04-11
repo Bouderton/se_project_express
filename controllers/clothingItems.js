@@ -49,12 +49,11 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-  { $addToSet: { likes: req.user._id } },
-  { new: true },
-  res.send({ message: 'Item liked' }),
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+    res.send({ message: 'Item liked' }),
   )
     .orFail()
     .then((item) => res.send(item))
@@ -70,7 +69,6 @@ const likeItem = (req, res) => {
 };
 
 const dislikeItem = (req, res) => {
-  const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -102,9 +100,9 @@ module.exports = {
 //   res.status(200).send({ message: 'Item liked' }),
 
 //   (module.exports.dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-    // req.params.itemId,
-    // { $pull: { likes: req.user._id } },
-    // { new: true },
-    // res.status(200).send({ message: 'Item disliked' }),
+// req.params.itemId,
+// { $pull: { likes: req.user._id } },
+// { new: true },
+// res.status(200).send({ message: 'Item disliked' }),
 //   )),
 // );

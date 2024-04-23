@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   email :{
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator(value) {
         return validator.isEmail(value);
@@ -31,7 +32,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
+    minlength: 8,
   }
 });
 
 module.exports = mongoose.model('user', userSchema);
+
+// DONT FORGET TO RUN THE LINTER!!!

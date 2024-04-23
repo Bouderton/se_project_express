@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
 
 // GET users
@@ -13,7 +14,19 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
+  // Hashing the Password and Creating User Email
+  bcrypt.hash(req.body.password, 10)
+  .then((hash) => {
+    User.create({
+      email: req.body.email,
+      password: hash,
+    })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(INVALID_DATA).send(err))
+  });
+
+// Creating User Name and Avatar
   User.create({ name, avatar })
     .then((user) => res.status(201).send(user))
     .catch((err) => {

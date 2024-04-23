@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const mainRouter = require('./routes/index');
-const signInAndOut = require('./routes/index');
 
 
 const app = express();

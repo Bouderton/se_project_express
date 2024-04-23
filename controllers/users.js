@@ -55,4 +55,42 @@ const getUserId = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUserId };
+const login = (req, res) => {
+  const {email, password} = req.body;
+
+  userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return User.findOne({email})
+  .then((user) => {
+  if(!user) {
+    return Promise.reject(new Error('Incorrect email or password'))
+  }
+  return bcrypt.compare(pasword, user.password)
+  .then((matched) => {
+    if(!matched) {
+      return Promise.reject(new Error('Incorrect email or password'))
+    }
+    return user;
+  })
+})
+}
+  
+  
+  
+
+  // User.findOne({email})
+  // .then((user) => {
+  //   if(!user) {
+  //     // user not found
+  //     return Promise.reject(new Error('Incorrect email or password'))
+  //   }
+  //   return bcrypt.compare(password, user.password)
+  // })
+  // .then((matched) => {
+  //   if(!matched) {
+  //     return Promise.reject(new Error('Incorrect email or pasword'))
+  //   }
+  // })
+  // .catch((err) => res.status(SERVER_ERROR).send(err));
+}
+
+module.exports = { getUsers, createUser, getUserId, login };

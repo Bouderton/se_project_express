@@ -1,5 +1,5 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const User = require('../models/user');
 const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
 
 // GET users
@@ -16,26 +16,27 @@ const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   // Hashing the Password and Creating User Email
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(password, 10)
   .then((hash) => {
     User.create({
-      email: req.body.email,
+      email,
       password: hash,
+      name,
+      avatar,
     })
     .then((user) => res.send(user))
     .catch((err) => res.status(INVALID_DATA).send(err))
   });
 
-// Creating User Name and Avatar
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === 'ValidationError') {
-        return res.status(INVALID_DATA).send({ message: 'Invalid Data. Failed to create user' });
-      }
-      return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
-    });
+  // User.create({ name, avatar })
+  //   .then((user) => res.status(201).send(user))
+  //   .catch((err) => {
+  //     console.error(err);
+  //     if (err.name === 'ValidationError') {
+  //       return res.status(INVALID_DATA).send({ message: 'Invalid Data. Failed to create user' });
+  //     }
+  //     return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
+  //   });
 };
 
 // const getUserId = (req, res) => {

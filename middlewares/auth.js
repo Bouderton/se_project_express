@@ -1,6 +1,31 @@
-const token = authorization.replace("Bearer ", "");
 
-const JWT_SECRET = require('../utils/config');
+// const JWT_SECRET = require('../utils/config');
 
-payload = jwt.verify(token, JWT_SECRET);
+const jwt = require('jsonwebtoken');
+
+module.exports.auth = (req, res, next) => {
+    const { authorization } = req.headers;
+  
+    if (!authorization || !authorization.startsWith('Bearer ')) {
+      return res
+        .status(401)
+        .send({ message: 'Authorization Required' });
+    }
+  
+    const token = authorization.replace('Bearer ', '');
+    let payload;
+    
+    try {
+      payload = jwt.verify(token, 'some-secret-key');
+    } catch (err) {
+      return res
+        .status(401)
+        .send({ message: 'Authorization Required' });
+    }
+  
+    req.user = payload; // assigning the payload to the request object
+  
+    return next(); // sending the request to the next middleware
+  };
+  
 

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -15,27 +15,27 @@ const userSchema = new mongoose.Schema({
       validator(value) {
         return validator.isURL(value);
       },
-      message: 'You must enter a valid URL',
+      message: "You must enter a valid URL",
     },
   },
-  email :{
+  email: {
     type: String,
     required: true,
-    // unique: true,
+    unique: true,
     validate: {
       validator(value) {
         return validator.isEmail(value);
-      }
-    }
+      },
+    },
   },
   password: {
     type: String,
     required: true,
     select: false,
     minlength: 8,
-  }
+  },
 });
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model("user", userSchema);
 
 // DONT FORGET TO RUN THE LINTER!!!

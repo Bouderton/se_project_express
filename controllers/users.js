@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
+const { INVALID_DATA, DUPE } = require('../utils/errors');
 
 // GET users
 
@@ -16,17 +16,37 @@ const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   // Hashing the Password and Creating User Email
-  bcrypt.hash(password, 10)
-  .then((hash) => {
-    User.create({
-      email,
-      password: hash,
-      name,
-      avatar,
+  User.findOne({email})
+  .then((user) => {
+    if(user) {
+      throw (
+        new Error(`${DUPE}: Email already exists`)
+      )
+    }
+    bcrypt.hash(password, 10)
+    .then((hash) => {
+      User.create({
+        email,
+        pasword: hash,
+        name, 
+        avatar,
+      })
     })
     .then((user) => res.send(user))
     .catch((err) => res.status(INVALID_DATA).send(err))
-  });
+  })
+};
+
+
+// .then((hash) => {
+//   User.create({
+//     email,
+//     password: hash,
+//     name,
+//     avatar,
+//   })})
+//   .then((user) => res.send(user))
+//   .catch((err) => res.status(INVALID_DATA).send(err))
 
   // User.create({ name, avatar })
   //   .then((user) => res.status(201).send(user))
@@ -37,7 +57,7 @@ module.exports.createUser = (req, res) => {
   //     }
   //     return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
   //   });
-};
+
 
 // const getUserId = (req, res) => {
 //   const { userId } = req.params;

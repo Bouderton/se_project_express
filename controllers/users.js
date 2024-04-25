@@ -16,31 +16,60 @@ const { INVALID_DATA, DUPE } = require("../utils/errors");
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   // Hashing the Password and Creating User Email
-  User.findOne({ email })
-    .then((user) => {
-      bcrypt
-        .hash(password, 10)
-        .then((hash) => {
-          User.create({
-            email,
-            password: hash,
-            name,
-            avatar,
-          });
+
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      return res.status(DUPE).send({ message: "Email already exists" });
+    }
+    return bcrypt
+      .hash(password, 10)
+      .then((hash) => {
+        User.create({
+          email,
+          password: hash,
+          name,
+          avatar,
         })
-        .catch((err) => {
-          console.error(err);
-          if (error.name === "MongoError" && error.code === 11000) {
-            return res.status(DUPE).send({ message: "Email already exists" });
-          } else {
+          .then(({ name, avatar, email, password }) => {
+            return res.status(200).send({ name, avatar, email, password });
+          })
+          .catch((err) => {
+            console.error(err);
             return res
               .status(INVALID_DATA)
               .send({ message: "Internal server error" });
-          }
-        });
-    })
-    .catch((err) => res.status(INVALID_DATA).send(err));
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(INVALID_DATA).send({ message: "Internal server error" });
+      });
+  });
 };
+// User.findOne({ email })
+//   .then((user) => {
+//     bcrypt
+//       .hash(password, 10)
+//       .then((hash) => {
+//         User.create({
+//           email,
+//           password: hash,
+//           name,
+//           avatar,
+//         });
+//       })
+//       .catch((err) => {
+//         console.error(err)
+//         if (error.name === "MongoError" && error.code === 11000) {
+//           return res.status(DUPE).send({ message: "Email already exists" });
+//         } else {
+//           return res
+//             .status(INVALID_DATA)
+//             .send({ message: "Internal server error" });
+//         }
+//       });
+//   })
+//   .catch((err) => res.status(INVALID_DATA).send(err));
 
 // .then((hash) => {
 //   User.create({

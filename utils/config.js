@@ -1,10 +1,3 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET = "super-secret-code" } = process.env;
 
-const jwt = require('jsonwebtoken');
-
-
-
-module.exports(NODE_ENV, JWT_SECRET);
-
-
-
+module.exports(JWT_SECRET);

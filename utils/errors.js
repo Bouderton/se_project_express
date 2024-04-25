@@ -6,4 +6,6 @@ const INVALID_DATA = 400;
 
 const DUPE = 409;
 
-module.exports = { NOT_FOUND, SERVER_ERROR, INVALID_DATA, DUPE };
+const UNAUTHORIZED = 401;
+
+module.exports = { NOT_FOUND, SERVER_ERROR, INVALID_DATA, DUPE, UNAUTHORIZED };

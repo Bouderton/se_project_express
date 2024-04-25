@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
-const { INVALID_DATA, DUPE } = require("../utils/errors");
+const { INVALID_DATA, DUPE, UNAUTHORIZED } = require("../utils/errors");
 
 // GET users
 
@@ -31,7 +31,7 @@ module.exports.createUser = (req, res) => {
           avatar,
         })
           .then(({ name, avatar, email, password }) => {
-            return res.status(200).send({ name, avatar, email, password });
+            return res.status(200).send({ name, avatar, email });
           })
           .catch((err) => {
             console.error(err);
@@ -109,41 +109,29 @@ module.exports.createUser = (req, res) => {
 // };
 
 module.exports.login = (req, res) => {
-  userSchema.statics.findUserByCredentials = function findUserByCredentials(
-    email,
-    password,
-  ) {
-    return User.findOne({ email }).then((user) => {
-      if (!user) {
-        return Promise.reject(new Error("Incorrect email or password"));
-      }
-      // creating and returning the jwt token
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
+  const { email, password } = req.body;
 
-      res.send({ token });
-      return bcrypt.compare(pasword, user.password).then((matched) => {
-        if (!matched) {
-          return Promise.reject(new Error("Incorrect email or password"));
-        }
-        return user;
-      });
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(UNAUTHORIZED).send({ message: err.message });
     });
-  };
-
-  // User.findOne({email})
-  // .then((user) => {
-  //   if(!user) {
-  //     // user not found
-  //     return Promise.reject(new Error('Incorrect email or password'))
-  //   }
-  //   return bcrypt.compare(password, user.password)
-  // })
-  // .then((matched) => {
-  //   if(!matched) {
-  //     return Promise.reject(new Error('Incorrect email or pasword'))
-  //   }
-  // })
-  // .catch((err) => res.status(SERVER_ERROR).send(err));
 };
+
+// User.findOne({email})
+// .then((user) => {
+//   if(!user) {
+//     // user not found
+//     return Promise.reject(new Error('Incorrect email or password'))
+//   }
+//   return bcrypt.compare(password, user.password)
+// })
+// .then((matched) => {
+//   if(!matched) {
+//     return Promise.reject(new Error('Incorrect email or pasword'))
+//   }
+// })
+// .catch((err) => res.status(SERVER_ERROR).send(err));

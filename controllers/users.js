@@ -1,22 +1,36 @@
 const bcrypt = require("bcryptjs");
+const { JWT_SECRET } = require("../utils/config");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const { INVALID_DATA, DUPE, UNAUTHORIZED } = require("../utils/errors");
+const {
+  INVALID_DATA,
+  DUPE,
+  UNAUTHORIZED,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
-// GET users
+// Gets current user
 
-// const getUsers = (req, res) => {
-//   User.find({})
-//     .then((users) => res.status(200).send(users))
-//     .catch((err) => {
-//       console.error(err);
-//       return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
-//     });
-// };
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.users._id)
+    .orFail()
+    .then((user) => {
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Internal server error" });
+    });
+};
+
+// Creates new user
 
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
-  // Hashing the Password and Creating User Email
 
+  // Hashing the Password and Creating User Email
   User.findOne({ email }).then((user) => {
     if (user) {
       return res.status(DUPE).send({ message: "Email already exists" });
@@ -46,6 +60,30 @@ module.exports.createUser = (req, res) => {
       });
   });
 };
+
+// Logging the user in
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      const { name, email, avatar, _id } = user;
+      res.send({ token, name, email, avatar, _id });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "CastError") {
+        res.status(INVALID_DATA).send({ message: "Invalid Data" });
+      }
+      return res.status(UNAUTHORIZED).send({ message: err.message });
+    });
+};
+
+// OLD CODE vvv
+
 // User.findOne({ email })
 //   .then((user) => {
 //     bcrypt
@@ -107,19 +145,6 @@ module.exports.createUser = (req, res) => {
 //       return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
 //     });
 // };
-
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      return res.status(200).send(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res.status(UNAUTHORIZED).send({ message: err.message });
-    });
-};
 
 // User.findOne({email})
 // .then((user) => {

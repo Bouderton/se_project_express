@@ -1,6 +1,4 @@
 const bcrypt = require("bcryptjs");
-const { JWT_SECRET } = require("../utils/config");
-const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const {
   INVALID_DATA,
@@ -12,7 +10,7 @@ const {
 // Gets current user
 
 module.exports.getCurrentUser = (req, res) => {
-  User.findById(req.users._id)
+  User.findById(req.user._id)
     .orFail()
     .then((user) => {
       return res.status(200).send(user);
@@ -44,7 +42,7 @@ module.exports.createUser = (req, res) => {
           name,
           avatar,
         })
-          .then(({ name, avatar, email, password }) => {
+          .then(({ name, avatar, email }) => {
             return res.status(200).send({ name, avatar, email });
           })
           .catch((err) => {
@@ -67,17 +65,10 @@ module.exports.login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-      const { name, email, avatar, _id } = user;
-      res.send({ token, name, email, avatar, _id });
+      return res.status(200).send(user);
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        res.status(INVALID_DATA).send({ message: "Invalid Data" });
-      }
       return res.status(UNAUTHORIZED).send({ message: err.message });
     });
 };

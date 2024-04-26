@@ -6,7 +6,7 @@ const {
   INVALID_DATA,
   DUPE,
   UNAUTHORIZED,
-  SERVER_ERROR,
+  // SERVER_ERROR,
 } = require("../utils/errors");
 
 // Gets current user
@@ -44,9 +44,9 @@ module.exports.createUser = (req, res) => {
           name,
           avatar,
         })
-          .then(({ name, avatar, email }) => {
-            return res.status(200).send({ name, avatar, email });
-          })
+          .then(({ name, avatar, email }) =>
+            res.status(200).send({ name, avatar, email }),
+          )
           .catch((err) => {
             console.error(err);
             return res

@@ -1,4 +1,6 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
 const {
   INVALID_DATA,
@@ -9,19 +11,19 @@ const {
 
 // Gets current user
 
-module.exports.getCurrentUser = (req, res) => {
-  User.findById(req.user._id)
-    .orFail()
-    .then((user) => {
-      return res.status(200).send(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "Internal server error" });
-    });
-};
+// module.exports.getCurrentUser = (req, res) => {
+//   User.findById(req.user._id)
+//     .orFail()
+//     .then((user) => {
+//       return res.status(200).send(user);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       return res
+//         .status(SERVER_ERROR)
+//         .send({ message: "Internal server error" });
+//     });
+// };
 
 // Creates new user
 
@@ -65,13 +67,18 @@ module.exports.login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      return res.status(200).send(user);
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
     })
     .catch((err) => {
       console.error(err);
       return res.status(UNAUTHORIZED).send({ message: err.message });
     });
 };
+
+// Set up getCurrentUser request
 
 // OLD CODE vvv
 

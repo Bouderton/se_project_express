@@ -65,3 +65,9 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
 };
 
 module.exports = mongoose.model("user", userSchema);
+
+// TO DO
+// GET USERS REQUEST
+// INSTALL CORS
+// CLEAN UP
+// SUBMIT AND PRAY

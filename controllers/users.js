@@ -12,7 +12,9 @@ const {
 // Gets current user
 
 module.exports.getCurrentUser = (req, res) => {
-  User.findById(req.user._id)
+  const userId = req.user._id;
+
+  User.findById(userId)
     .orFail()
     .then((user) => {
       return res.status(200).send(user);

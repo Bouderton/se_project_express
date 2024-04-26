@@ -6,24 +6,24 @@ const {
   INVALID_DATA,
   DUPE,
   UNAUTHORIZED,
-  // SERVER_ERROR,
+  SERVER_ERROR,
 } = require("../utils/errors");
 
 // Gets current user
 
-// module.exports.getCurrentUser = (req, res) => {
-//   User.findById(req.user._id)
-//     .orFail()
-//     .then((user) => {
-//       return res.status(200).send(user);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       return res
-//         .status(SERVER_ERROR)
-//         .send({ message: "Internal server error" });
-//     });
-// };
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .orFail()
+    .then((user) => {
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Internal server error" });
+    });
+};
 
 // Creates new user
 

@@ -1,5 +1,7 @@
 const NOT_FOUND = 404;
 
+const FORBIDDEN = 403;
+
 const SERVER_ERROR = 500;
 
 const INVALID_DATA = 400;
@@ -8,4 +10,11 @@ const DUPE = 409;
 
 const UNAUTHORIZED = 401;
 
-module.exports = { NOT_FOUND, SERVER_ERROR, INVALID_DATA, DUPE, UNAUTHORIZED };
+module.exports = {
+  FORBIDDEN,
+  NOT_FOUND,
+  SERVER_ERROR,
+  INVALID_DATA,
+  DUPE,
+  UNAUTHORIZED,
+};

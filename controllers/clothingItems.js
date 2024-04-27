@@ -42,29 +42,30 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  const { itemId } = req.params;
+  console.log(req.params);
+  const { itemsId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemsId)
     .orFail()
     .then((item) => {
+      const userId = req.user._id;
       if (!item) {
         return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
-      if (item.userId.toString() !== userId) {
+      if (!item.owner === userId) {
         return res
           .status(FORBIDDEN)
           .send({ message: "That item is not yours. You cannot delete it" });
       }
-      item
-        .remove()
+      return ClothingItem.findByIdAndRemove(itemId)
         .then(() => {
-          return res.status(200).send({ message: "Item successfully deleted" });
+          return res.status(200).send({ message: "Item Successfully Deleted" });
         })
         .catch((err) => {
           console.error(err);
           return res
             .status(SERVER_ERROR)
-            .send({ message: "Server error. Failed to delete item" });
+            .send({ message: "Internal server error" });
         });
     })
     .catch((err) => {

@@ -7,6 +7,7 @@ const {
   DUPE,
   UNAUTHORIZED,
   SERVER_ERROR,
+  NOT_FOUND,
 } = require("../utils/errors");
 
 // Gets current user
@@ -80,7 +81,30 @@ module.exports.login = (req, res) => {
     });
 };
 
-// Set up getCurrentUser request
+// Update user profile
+
+module.exports.updateUserInfo = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      return res.status(200).send({ message: "User info updated" });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "Not Found") {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
+      if (err.name === "ValidationError") {
+        return res.status(INVALID_DATA).send({ message: "Invalid Data" });
+      }
+    });
+};
 
 // OLD CODE vvv
 

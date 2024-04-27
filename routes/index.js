@@ -10,11 +10,11 @@ router.post("/signup", createUser);
 
 router.post("/signin", login);
 
+router.use("/items", itemsRouter);
+
 router.use(auth);
 
 router.use("/users", userRouter);
-
-router.use("/items", itemsRouter);
 
 router.use((req, res, next) => {
   res.status(NOT_FOUND).send({ message: "Route not found" });

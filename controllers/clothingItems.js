@@ -43,9 +43,9 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   console.log(req.params);
-  const { itemsId } = req.params;
+  const { itemId } = req.params;
 
-  ClothingItem.findById({ _id: itemsId })
+  ClothingItem.findById({ _id: itemId })
     .orFail()
     .then((item) => {
       if (!item) {
@@ -56,7 +56,7 @@ const deleteItem = (req, res) => {
           .status(FORBIDDEN)
           .send({ message: "That item is not yours. You cannot delete it" });
       }
-      return ClothingItem.findByIdAndRemove({ _id: itemsId })
+      return ClothingItem.findByIdAndRemove({ _id: itemId })
         .then(() => {
           return res.status(200).send({ message: "Item Successfully Deleted" });
         })

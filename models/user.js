@@ -53,14 +53,6 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
         }
         return user;
       });
-    })
-    .catch((err) => {
-      if (!email || !password) {
-        return Promise.reject(
-          new Error("Email and password fields are required"),
-        );
-      }
-      return Promise.reject(err);
     });
 };
 

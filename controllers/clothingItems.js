@@ -75,6 +75,11 @@ const deleteItem = (req, res) => {
           .status(INVALID_DATA)
           .send({ message: "Invalid Data. Failed to delete item" });
       }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND)
+          .send({ message: "Item ID does not exist" });
+      }
       return res
         .status(SERVER_ERROR)
         .send({ message: "An error have occured on the server" });
@@ -116,7 +121,7 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(200).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       if (err.name === "CastError") {
         return res.status(INVALID_DATA).send({ message: "Invalid Data" });

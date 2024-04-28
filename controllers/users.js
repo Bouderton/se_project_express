@@ -59,7 +59,9 @@ module.exports.createUser = (req, res) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(INVALID_DATA).send({ message: "Internal server error" });
+        return res
+          .status(INVALID_DATA)
+          .send({ message: "Internal server error" });
       });
   });
 };
@@ -77,7 +79,12 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(UNAUTHORIZED).send({ message: err.message });
+      if (!email || !password) {
+        return res
+          .status(INVALID_DATA)
+          .send({ message: "Email and password fields are required" });
+      }
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -93,7 +100,7 @@ module.exports.updateUserInfo = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
-      return res.status(200).send({ message: "User info updated" });
+      res.send(user);
     })
     .catch((err) => {
       console.error(err);

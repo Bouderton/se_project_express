@@ -7,6 +7,7 @@ const {
   DUPE,
   SERVER_ERROR,
   NOT_FOUND,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 
 // Gets current user
@@ -19,6 +20,9 @@ module.exports.getCurrentUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
       return res
         .status(SERVER_ERROR)
         .send({ message: "Internal server error" });
@@ -47,6 +51,9 @@ module.exports.createUser = (req, res) => {
           .then(() => res.status(200).send({ name, avatar, email }))
           .catch((err) => {
             console.error(err);
+            if (err.name === "ValidationError") {
+              return res.status(INVALID_DATA).send({ message: "Invalid Data" });
+            }
             return res
               .status(INVALID_DATA)
               .send({ message: "Internal server error" });
@@ -55,7 +62,7 @@ module.exports.createUser = (req, res) => {
       .catch((err) => {
         console.error(err);
         return res
-          .status(INVALID_DATA)
+          .status(SERVER_ERROR)
           .send({ message: "Internal server error" });
       });
   });
@@ -64,6 +71,12 @@ module.exports.createUser = (req, res) => {
 // Logging the user in
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(INVALID_DATA)
+      .send({ message: "Email and password fields are required" });
+  }
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -74,10 +87,8 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (!email || !password) {
-        return res
-          .status(INVALID_DATA)
-          .send({ message: "Email and password fields are required" });
+      if (err.message === "Incorrect email or password") {
+        return res.status(UNAUTHORIZED).send({ message: "Unauthorized" });
       }
       return res.status(SERVER_ERROR).send({ message: err.message });
     });
@@ -94,12 +105,13 @@ module.exports.updateUserInfo = (req, res) => {
     { name, avatar },
     { new: true, runValidators: true },
   )
+    .orFail()
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "Not Found") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
       if (err.name === "ValidationError") {
@@ -110,82 +122,3 @@ module.exports.updateUserInfo = (req, res) => {
         .send({ message: "Internal server error" });
     });
 };
-
-// OLD CODE vvv
-
-// User.findOne({ email })
-//   .then((user) => {
-//     bcrypt
-//       .hash(password, 10)
-//       .then((hash) => {
-//         User.create({
-//           email,
-//           password: hash,
-//           name,
-//           avatar,
-//         });
-//       })
-//       .catch((err) => {
-//         console.error(err)
-//         if (error.name === "MongoError" && error.code === 11000) {
-//           return res.status(DUPE).send({ message: "Email already exists" });
-//         } else {
-//           return res
-//             .status(INVALID_DATA)
-//             .send({ message: "Internal server error" });
-//         }
-//       });
-//   })
-//   .catch((err) => res.status(INVALID_DATA).send(err));
-
-// .then((hash) => {
-//   User.create({
-//     email,
-//     password: hash,
-//     name,
-//     avatar,
-//   })})
-//   .then((user) => res.send(user))
-//   .catch((err) => res.status(INVALID_DATA).send(err))
-
-// User.create({ name, avatar })
-//   .then((user) => res.status(201).send(user))
-//   .catch((err) => {
-//     console.error(err);
-//     if (err.name === 'ValidationError') {
-//       return res.status(INVALID_DATA).send({ message: 'Invalid Data. Failed to create user' });
-//     }
-//     return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
-//   });
-
-// const getUserId = (req, res) => {
-//   const { userId } = req.params;
-//   User.findById(userId)
-//     .orFail()
-//     .then((user) => res.status(200).send(user))
-//     .catch((err) => {
-//       console.error(err);
-//       if (err.name === 'DocumentNotFoundError') {
-//         res.status(NOT_FOUND).send({ message: 'User ID not found' });
-//       }
-//       if (err.name === 'CastError') {
-//         res.status(INVALID_DATA).send({ message: 'Invalid Data' });
-//       }
-//       return res.status(SERVER_ERROR).send({ message: 'An error has occured on the server' });
-//     });
-// };
-
-// User.findOne({email})
-// .then((user) => {
-//   if(!user) {
-//     // user not found
-//     return Promise.reject(new Error('Incorrect email or password'))
-//   }
-//   return bcrypt.compare(password, user.password)
-// })
-// .then((matched) => {
-//   if(!matched) {
-//     return Promise.reject(new Error('Incorrect email or pasword'))
-//   }
-// })
-// .catch((err) => res.status(SERVER_ERROR).send(err));

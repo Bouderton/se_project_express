@@ -57,9 +57,9 @@ const deleteItem = (req, res) => {
           .send({ message: "That item is not yours. You cannot delete it" });
       }
       return ClothingItem.findByIdAndRemove({ _id: itemId })
-        .then(() => {
-          return res.status(200).send({ message: "Item Successfully Deleted" });
-        })
+        .then(() =>
+          res.status(200).send({ message: "Item Successfully Deleted" }),
+        )
         .catch((err) => {
           console.error(err);
           return res

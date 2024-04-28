@@ -5,7 +5,6 @@ const User = require("../models/user");
 const {
   INVALID_DATA,
   DUPE,
-  UNAUTHORIZED,
   SERVER_ERROR,
   NOT_FOUND,
 } = require("../utils/errors");
@@ -17,9 +16,7 @@ module.exports.getCurrentUser = (req, res) => {
 
   User.findById(userId)
     .orFail()
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       return res
@@ -47,9 +44,7 @@ module.exports.createUser = (req, res) => {
           name,
           avatar,
         })
-          .then(({ name, avatar, email }) =>
-            res.status(200).send({ name, avatar, email }),
-          )
+          .then(() => res.status(200).send({ name, avatar, email }))
           .catch((err) => {
             console.error(err);
             return res
@@ -110,6 +105,9 @@ module.exports.updateUserInfo = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(INVALID_DATA).send({ message: "Invalid Data" });
       }
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Internal server error" });
     });
 };
 

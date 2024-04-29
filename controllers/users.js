@@ -55,7 +55,7 @@ module.exports.createUser = (req, res) => {
               return res.status(INVALID_DATA).send({ message: "Invalid Data" });
             }
             return res
-              .status(INVALID_DATA)
+              .status(SERVER_ERROR)
               .send({ message: "Internal server error" });
           });
       })

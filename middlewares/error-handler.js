@@ -1,6 +1,11 @@
+const { INVALID_DATA } = require("../utils/errors");
+
 const errorHandler = ({ req, res, err, next }) => {
   console.error(err);
-  return res.status(500).send({ message: "Internal Server Error" });
+  const { INVALID_DATA, message } = err;
+  return res
+    .status(INVALID_DATA)
+    .send({ message: INVALID_DATA ? "Internal Server Error" : message });
 };
 
 module.exports = errorHandler;

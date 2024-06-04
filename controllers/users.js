@@ -4,7 +4,7 @@ const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
 const {
   INVALID_DATA,
-  DUPE,
+  CONFLICT,
   SERVER_ERROR,
   NOT_FOUND,
   UNAUTHORIZED,
@@ -37,7 +37,7 @@ module.exports.createUser = (req, res) => {
   // Hashing the Password and Creating User Email
   User.findOne({ email }).then((user) => {
     if (user) {
-      return res.status(DUPE).send({ message: "Email already exists" });
+      return res.status(CONFLICT).send({ message: "Email already exists" });
     }
     return bcrypt
       .hash(password, 10)

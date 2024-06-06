@@ -69,9 +69,11 @@ module.exports.createUser = (req, res) => {
 };
 
 // Logging the user in
+
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
+  // If email and password fields are empty, return 400 error
   if (!email || !password) {
     return res
       .status(INVALID_DATA)
@@ -80,6 +82,7 @@ module.exports.login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      // creating a token with a 7 day expiration
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });

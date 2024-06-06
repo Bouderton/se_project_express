@@ -7,6 +7,8 @@ const {
 
 const ClothingItem = require("../models/clothingItem");
 
+// Get all items from db
+
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
@@ -18,12 +20,13 @@ const getItems = (req, res) => {
     });
 };
 
+// Create new item
+
 const createItem = (req, res) => {
-  console.log(req);
-  console.log(req.body);
+  // console.log(req);
+  // console.log(req.body);
 
   const { name, weather, imageUrl } = req.body;
-
   ClothingItem.create({
     name,
     weather,
@@ -41,6 +44,8 @@ const createItem = (req, res) => {
     });
 };
 
+// Deleting and item
+
 const deleteItem = (req, res) => {
   console.log(req.params);
   const { itemId } = req.params;
@@ -48,14 +53,18 @@ const deleteItem = (req, res) => {
   ClothingItem.findById({ _id: itemId })
     .orFail()
     .then((item) => {
+      // No item = No delete
       if (!item) {
         return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
+
+      // Owner of the item is not the current user, forbid deletion
       if (!item.owner.equals(req.user._id)) {
         return res
           .status(FORBIDDEN)
           .send({ message: "That item is not yours. You cannot delete it" });
       }
+      // Actually deleting the item
       return ClothingItem.findByIdAndRemove({ _id: itemId })
         .then(() =>
           res.status(200).send({ message: "Item Successfully Deleted" }),
@@ -86,6 +95,8 @@ const deleteItem = (req, res) => {
     });
 };
 
+// Liking/Favoriting an item
+
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -109,6 +120,8 @@ const likeItem = (req, res) => {
         .send({ message: "An error has occured on the server" });
     });
 };
+
+// Disliking/Unfavoriting and item
 
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
@@ -139,17 +152,3 @@ module.exports = {
   likeItem,
   dislikeItem,
 };
-
-// module.exports.likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-//   req.params.itemId,
-//   { $addToSet: { likes: req.user._id } },
-//   { new: true },
-//   res.status(200).send({ message: 'Item liked' }),
-
-//   (module.exports.dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-// req.params.itemId,
-// { $pull: { likes: req.user._id } },
-// { new: true },
-// res.status(200).send({ message: 'Item disliked' }),
-//   )),
-// );

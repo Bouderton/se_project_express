@@ -23,3 +23,8 @@ router.use((req, res, next) => {
 });
 
 module.exports = router;
+
+// NOTES
+// Centralize Error Handling
+// Use new middleware functions for the errors
+// Uhhhhhhhhhhhhhhhh

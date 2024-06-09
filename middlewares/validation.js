@@ -17,3 +17,5 @@ module.exports.validateReturningUser = celebrate({
     password: Joi.string().required(),
   }),
 });
+
+module.exports.validate;

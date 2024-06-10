@@ -1,3 +1,16 @@
+// class CustomError extends Error {
+//   constructor(message, statusCode) {
+//     super(message);
+//     this.statusCode = statusCode;
+//   }
+// }
+
+// const handleError = (err, message, next) => {
+//   if (err.message === "ValidationError") {
+
+//   }
+// };
+
 const NOT_FOUND = 404;
 
 const FORBIDDEN = 403;

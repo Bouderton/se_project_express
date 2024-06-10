@@ -31,7 +31,7 @@ module.exports.getCurrentUser = (req, res) => {
 
 // Creates new user
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   // Hashing the Password and Creating User Email
@@ -53,6 +53,8 @@ module.exports.createUser = (req, res) => {
             console.error(err);
             if (err.name === "ValidationError") {
               return res.status(INVALID_DATA).send({ message: "Invalid Data" });
+            } else {
+              next(err);
             }
             return res
               .status(SERVER_ERROR)

@@ -1,9 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
-require("dotenv").config;
 const app = express();
 const { PORT = 3001 } = process.env;
 

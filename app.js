@@ -1,13 +1,17 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 require("dotenv").config;
 =======
 require("dotenv").config();
 >>>>>>> 9322ce382ef9d4ea67f423eeeae5c416d92b69bf
+=======
+>>>>>>> parent of 9322ce3... dotenv moved
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
+require("dotenv").config;
 const app = express();
 const { PORT = 3001 } = process.env;
 

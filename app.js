@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 require("dotenv").config;
-=======
-require("dotenv").config();
->>>>>>> 9322ce382ef9d4ea67f423eeeae5c416d92b69bf
-=======
->>>>>>> parent of 9322ce3... dotenv moved
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");

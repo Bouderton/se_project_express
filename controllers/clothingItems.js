@@ -5,6 +5,8 @@ const {
   FORBIDDEN,
 } = require("../utils/errors");
 
+const NotFoundError = require("../utils/errors/NotFoundError");
+
 const ClothingItem = require("../models/clothingItem");
 
 // Get all items from db

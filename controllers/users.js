@@ -10,6 +10,8 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 
+const NotFoundError = require("../utils/errors/NotFoundError");
+
 // Gets current user
 
 module.exports.getCurrentUser = (req, res) => {

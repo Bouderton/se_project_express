@@ -1,3 +1,5 @@
+const ClothingItem = require("../models/clothingItem");
+
 const {
   NOT_FOUND,
   SERVER_ERROR,
@@ -6,8 +8,7 @@ const {
 } = require("../utils/errors");
 
 const NotFoundError = require("../utils/errors/NotFoundError");
-
-const ClothingItem = require("../models/clothingItem");
+const BadRequestError = require("../utils/errors/BadRequestError");
 
 // Get all items from db
 
@@ -48,7 +49,7 @@ const createItem = (req, res) => {
 
 // Deleting and item
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   console.log(req.params);
   const { itemId } = req.params;
 
@@ -80,20 +81,21 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      console.log(ClothingItem.owner, req.user._id);
       if (err.name === "CastError") {
-        return res
-          .status(INVALID_DATA)
-          .send({ message: "Invalid Data. Failed to delete item" });
+        // return res
+        //   .status(INVALID_DATA)
+        //   .send({ message: "Invalid Data. Failed to delete item" });
+        return next(new BadRequestError("Invalid ID"));
       }
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND)
           .send({ message: "Item ID does not exist" });
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error have occured on the server" });
+      // return res
+      //   .status(SERVER_ERROR)
+      //   .send({ message: "An error have occured on the server" });
+      next(err);
     });
 };
 

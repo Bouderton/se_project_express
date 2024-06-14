@@ -1,5 +1,3 @@
-const { INVALID_DATA } = require("../utils/errors");
-
 const errorHandler = ({ req, res, err, next }) => {
   console.error(err);
   const { INVALID_DATA, message } = err;

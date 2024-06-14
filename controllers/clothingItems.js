@@ -9,6 +9,7 @@ const {
 
 const NotFoundError = require("../utils/errors/NotFoundError");
 const BadRequestError = require("../utils/errors/BadRequestError");
+const ForbiddenError = require("../utils/errors/ForbiddenError");
 
 // Get all items from db
 
@@ -63,9 +64,10 @@ const deleteItem = (req, res, next) => {
 
       // Owner of the item is not the current user, forbid deletion
       if (!item.owner.equals(req.user._id)) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "That item is not yours. You cannot delete it" });
+        // return res
+        //   .status(FORBIDDEN)
+        //   .send({ message: "That item is not yours. You cannot delete it" });
+        return next(new ForbiddenError("You are not the owner of this item"));
       }
       // Actually deleting the item
       return ClothingItem.findByIdAndRemove({ _id: itemId })
@@ -85,12 +87,13 @@ const deleteItem = (req, res, next) => {
         // return res
         //   .status(INVALID_DATA)
         //   .send({ message: "Invalid Data. Failed to delete item" });
-        return next(new BadRequestError("Invalid ID"));
+        next(new BadRequestError("Invalid ID"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Item ID does not exist" });
+        // return res
+        //   .status(NOT_FOUND)
+        //   .send({ message: "Item ID does not exist" });
+        next(new NotFoundError("Item not found"));
       }
       // return res
       //   .status(SERVER_ERROR)

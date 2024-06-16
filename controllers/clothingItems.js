@@ -1,11 +1,11 @@
 const ClothingItem = require("../models/clothingItem");
 
-const {
-  NOT_FOUND,
-  SERVER_ERROR,
-  INVALID_DATA,
-  FORBIDDEN,
-} = require("../utils/errors");
+// const {
+//   NOT_FOUND,
+//   SERVER_ERROR,
+//   INVALID_DATA,
+//   FORBIDDEN,
+// } = require("../utils/errors");
 
 const NotFoundError = require("../utils/errors/NotFoundError");
 const BadRequestError = require("../utils/errors/BadRequestError");
@@ -118,13 +118,13 @@ const likeItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return next(new NotFoundError("Item not found"));
+        next(new NotFoundError("Item not found"));
       }
       if (err.name === "CastError") {
         // return res
         //   .status(INVALID_DATA)
         //   .send({ message: "Invalid Data. Failed to like item" });
-        return next(new BadRequestError("Invalid Data. Failed to like item"));
+        next(new BadRequestError("Invalid Data. Failed to like item"));
       }
       // return res
       //   .status(SERVER_ERROR)

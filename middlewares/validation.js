@@ -59,3 +59,9 @@ module.exports.validateItem = celebrate({
     }),
   }),
 });
+
+module.exports.validateId = celebrate({
+  params: Joi.object().keys({
+    // uhhhhhhhh
+  }),
+});

@@ -2,13 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
-// const {
-//   INVALID_DATA,
-//   CONFLICT,
-//   SERVER_ERROR,
-//   NOT_FOUND,
-//   UNAUTHORIZED,
-// } = require("../utils/errors");
 
 const NotFoundError = require("../utils/errors/NotFoundError");
 const BadRequestError = require("../utils/errors/BadRequestError");
@@ -27,12 +20,8 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        // return res.status(NOT_FOUND).send({ message: "User not found" });
         next(new NotFoundError("User not found"));
       }
-      // return res
-      //   .status(SERVER_ERROR)
-      //   .send({ message: "Internal server error" });
       next(err);
     });
 };
@@ -45,7 +34,6 @@ module.exports.createUser = (req, res, next) => {
   // Hashing the Password and Creating User Email
   User.findOne({ email }).then((user) => {
     if (user) {
-      // return res.status(CONFLICT).send({ message: "Email already exists" });
       next(new ConflictError("User already exists"));
     }
     return bcrypt
@@ -61,7 +49,6 @@ module.exports.createUser = (req, res, next) => {
           .catch((err) => {
             console.error(err);
             if (err.name === "ValidationError") {
-              // return res.status(INVALID_DATA).send({ message: "Invalid Data" });
               next(new BadRequestError("Invalid Data"));
             }
             next(err);
@@ -69,9 +56,6 @@ module.exports.createUser = (req, res, next) => {
       })
       .catch((err) => {
         console.error(err);
-        // return res
-        //   .status(SERVER_ERROR)
-        //   .send({ message: "Internal server error" });
         next(err);
       });
   });
@@ -84,9 +68,6 @@ module.exports.login = (req, res, next) => {
 
   // If email and password fields are empty, return 400 error
   if (!email || !password) {
-    // return res
-    //   .status(INVALID_DATA)
-    //   .send({ message: "Email and password fields are required" });
     next(new BadRequestError("Email and password fields are required"));
   }
 
@@ -101,7 +82,6 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        // return res.status(UNAUTHORIZED).send({ message: "Unauthorized" });
         next(new UnauthorizedError("Unauthorized"));
       }
       next(err);
@@ -126,16 +106,11 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        // return res.status(NOT_FOUND).send({ message: "User not found" });
         next(new NotFoundError("User not found"));
       }
       if (err.name === "ValidationError") {
-        // return res.status(INVALID_DATA).send({ message: "Invalid Data" });
         next(new BadRequestError("Invalid Data"));
       }
-      // return res
-      //   .status(SERVER_ERROR)
-      //   .send({ message: "Internal server error" });
       next(err);
     });
 };

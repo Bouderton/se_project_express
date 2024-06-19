@@ -35,7 +35,7 @@ module.exports.validateNewUser = celebrate({
 
 // Returning user
 module.exports.validateReturningUser = celebrate({
-  body: Joi.object.keys({
+  body: Joi.object().keys({
     email: Joi.string().required().email().messages({
       "string.empty": 'The "email" field is required',
     }),
@@ -47,7 +47,7 @@ module.exports.validateReturningUser = celebrate({
 
 // Item validation
 module.exports.validateItem = celebrate({
-  body: Joi.object.keys({
+  body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
       "string.min": 'The minimum length of the "name" field is 2',
       "string.max": 'The maximum length of the "name" field is 30',

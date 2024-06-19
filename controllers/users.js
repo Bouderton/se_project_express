@@ -5,7 +5,6 @@ const User = require("../models/user");
 
 const NotFoundError = require("../utils/errors/NotFoundError");
 const BadRequestError = require("../utils/errors/BadRequestError");
-const ForbiddenError = require("../utils/errors/ForbiddenError");
 const ConflictError = require("../utils/errors/ConflictError");
 const UnauthorizedError = require("../utils/errors/UnauthorizedError");
 
@@ -20,7 +19,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("User not found"));
+        return next(new NotFoundError("User not found"));
       }
       next(err);
     });
@@ -34,7 +33,7 @@ module.exports.createUser = (req, res, next) => {
   // Hashing the Password and Creating User Email
   User.findOne({ email }).then((user) => {
     if (user) {
-      next(new ConflictError("User already exists"));
+      return next(new ConflictError("User already exists"));
     }
     return bcrypt
       .hash(password, 10)
@@ -49,7 +48,7 @@ module.exports.createUser = (req, res, next) => {
           .catch((err) => {
             console.error(err);
             if (err.name === "ValidationError") {
-              next(new BadRequestError("Invalid Data"));
+              return next(new BadRequestError("Invalid Data"));
             }
             next(err);
           });
@@ -82,7 +81,7 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        next(new UnauthorizedError("Unauthorized"));
+        return next(new UnauthorizedError("Unauthorized"));
       }
       next(err);
     });
@@ -106,10 +105,10 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("User not found"));
+        return next(new NotFoundError("User not found"));
       }
       if (err.name === "ValidationError") {
-        next(new BadRequestError("Invalid Data"));
+        return next(new BadRequestError("Invalid Data"));
       }
       next(err);
     });

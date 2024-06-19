@@ -48,12 +48,12 @@ const deleteItem = (req, res, next) => {
     .then((item) => {
       // No item = No delete
       if (!item) {
-        next(new NotFoundError("Item does not exist."));
+        return next(new NotFoundError("Item does not exist."));
       }
 
       // Owner of the item is not the current user, forbid deletion
       if (!item.owner.equals(req.user._id)) {
-        next(new ForbiddenError("You are not the owner of this item"));
+        return next(new ForbiddenError("You are not the owner of this item"));
       }
       // Actually deleting the itemWWWWWWWWW
       return ClothingItem.findByIdAndRemove({ _id: itemId })
@@ -68,10 +68,10 @@ const deleteItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        next(new BadRequestError("Invalid ID"));
+        return next(new BadRequestError("Invalid ID"));
       }
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("Item does not exist"));
+        return next(new NotFoundError("Item does not exist"));
       }
       next(err);
     });
@@ -90,10 +90,10 @@ const likeItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("Item not found"));
+        return next(new NotFoundError("Item not found"));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError("Invalid Data. Failed to like item"));
+        return next(new BadRequestError("Invalid Data. Failed to like item"));
       }
       next(err);
     });
@@ -112,10 +112,12 @@ const dislikeItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("Item not found"));
+        return next(new NotFoundError("Item not found"));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError("Invalid Data. Failed to dislike item"));
+        return next(
+          new BadRequestError("Invalid Data. Failed to dislike item"),
+        );
       }
       next(err);
     });

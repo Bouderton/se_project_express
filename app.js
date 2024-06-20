@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
+const { limiter } = require("./utils/rate-limit-config");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -25,6 +26,7 @@ app.listen(PORT, () => {
 
 app.use(cors());
 app.use(express.json());
+app.use(limiter);
 app.use(requestLogger);
 app.get("/crash-test", () => {
   setTimeout(() => {

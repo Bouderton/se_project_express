@@ -12,10 +12,12 @@ This project is the Back End to the Full Stack Application I am building (What t
 
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
 
-## Front-End Link
+## Deployments
+
+# Front-End Domain
 
 [https://wtwr.bizzapp.com/]
 
-## Back-End Link
+# Back-End Domain
 
 [https://api.wtwr.bizzapp.com/]

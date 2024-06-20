@@ -15,7 +15,7 @@ router.post("/signup", validateNewUser, createUser);
 
 router.post("/signin", validateReturningUser, login);
 
-router.use("/items", validateItem, itemsRouter);
+router.use("/items", itemsRouter);
 
 router.use(auth);
 

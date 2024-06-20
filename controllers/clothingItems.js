@@ -11,7 +11,7 @@ const getItems = (req, res, next) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      next(err);
+      return next(err);
     });
 };
 
@@ -73,7 +73,7 @@ const deleteItem = (req, res, next) => {
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item does not exist"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -95,7 +95,7 @@ const likeItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid Data. Failed to like item"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -119,7 +119,7 @@ const dislikeItem = (req, res, next) => {
           new BadRequestError("Invalid Data. Failed to dislike item"),
         );
       }
-      next(err);
+      return next(err);
     });
 };
 

@@ -21,7 +21,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("User not found"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -50,12 +50,12 @@ module.exports.createUser = (req, res, next) => {
             if (err.name === "ValidationError") {
               return next(new BadRequestError("Invalid Data"));
             }
-            next(err);
+            return next(err);
           });
       })
       .catch((err) => {
         console.error(err);
-        next(err);
+        return next(err);
       });
   });
 };
@@ -83,7 +83,7 @@ module.exports.login = (req, res, next) => {
       if (err.message === "Incorrect email or password") {
         return next(new UnauthorizedError("Unauthorized"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -110,6 +110,6 @@ module.exports.updateUserInfo = (req, res, next) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid Data"));
       }
-      next(err);
+      return next(err);
     });
 };

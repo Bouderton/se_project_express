@@ -14,10 +14,10 @@ Before committing your code, make sure you edit the file `sprint.txt` in the roo
 
 ## Deployments
 
-# Front-End Domain
+### Front-End Domain
 
 [https://wtwr.bizzapp.com/]
 
-# Back-End Domain
+### Back-End Domain
 
 [https://api.wtwr.bizzapp.com/]
